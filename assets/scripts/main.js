@@ -45,7 +45,22 @@ function initializeServiceWorker() {
   // We first must register our ServiceWorker here before any of the code in
   // sw.js is executed.
   // B1. TODO - Check if 'serviceWorker' is supported in the current browser
+  if(!('serviceWorker' in navigator)){
+    console.log("Service worker is not supported in this browser")
+    return; 
+  }
+
   // B2. TODO - Listen for the 'load' event on the window object.
+  let serviceWorker; 
+  window.addEventListener('load', async () => {
+    serviceWorker = await navigator.serviceWorker.register("./sw.js").then(() => {
+      console.log("Service worker successfully registered")
+    }).catch((error) => {
+    console.log("The Service Worker registration failed")
+    console.error(error);
+    })
+  })
+
   // Steps B3-B6 will be *inside* the event listener's function created in B2
   // B3. TODO - Register './sw.js' as a service worker (The MDN article
   //            "Using Service Workers" will help you here)
@@ -69,7 +84,7 @@ async function getRecipes() {
   // A1. TODO - Check local storage to see if there are any recipes.
   //            If there are recipes, return them.
   if(localStorage.getItem('recipes') != null){
-    console.log("I am here"); 
+    console.log("There are recipes in localStorage"); 
     return JSON.parse(localStorage.getItem('recipes'));  
   }
 
